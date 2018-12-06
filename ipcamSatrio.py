@@ -63,7 +63,7 @@ while(True):
     # find contours in the thresholded image
     cnts = cv2.findContours(dilation.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     cnts = cnts[0] if imutils.is_cv2() else cnts[1]
-
+    con = []
     con = max(cnts, key = cv2.contourArea)
         
     
@@ -75,18 +75,19 @@ while(True):
 
         # draw the contour and center of the shape on the image
         cv2.drawContours(frame, [c], -1, (0, 255, 0), 2)
-        # cv2.circle(frame, (cX, cY), 7, (255, 255, 255), -1)
         #find the biggest area
         
         #con = max([c], key = cv2.contourArea)
         x,y,w,h = cv2.boundingRect(con)
         cv2.rectangle(frame,(x,y),(x+w,y+h),(0,0,255),2)
 
-        (x,y),radius = cv2.minEnclosingCircle(c)
+        (x,y),radius = cv2.minEnclosingCircle(con)
         center = (int(x),int(y))
         radius = int(radius)
     
         cv2.circle(frame,center,radius,(255,255,0),2)
+        cv2.circle(frame, (cX, cY), 7, (255, 255, 255), -1)
+        
 
         # show the image
         cv2.imshow("Image", frame)
