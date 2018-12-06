@@ -8,7 +8,9 @@ import imutils
 #ap.add_argument("-i", "--image", help = "path to the image")
 #args = vars(ap.parse_args())
 
-cap = cv2.VideoCapture("http://10.112.1.67:8080/video")
+# cap = cv2.VideoCapture("http://10.112.1.67:8080/video")
+cap = cv2.VideoCapture("http://192.168.43.1:8080/video")
+
 
 # define the list of boundaries
 # BGR
@@ -61,7 +63,10 @@ while(True):
     # find contours in the thresholded image
     cnts = cv2.findContours(dilation.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     cnts = cnts[0] if imutils.is_cv2() else cnts[1]
-
+    con = []
+    con = max(cnts, key = cv2.contourArea)
+        
+    
     for c in cnts:
         # compute the center of the contour
         M = cv2.moments(c)
@@ -70,29 +75,22 @@ while(True):
 
         # draw the contour and center of the shape on the image
         cv2.drawContours(frame, [c], -1, (0, 255, 0), 2)
+        #find the biggest area
+        
+        #con = max([c], key = cv2.contourArea)
+        x,y,w,h = cv2.boundingRect(con)
+        cv2.rectangle(frame,(x,y),(x+w,y+h),(0,0,255),2)
+
+        (x,y),radius = cv2.minEnclosingCircle(con)
+        center = (int(x),int(y))
+        radius = int(radius)
+    
+        cv2.circle(frame,center,radius,(255,255,0),2)
         cv2.circle(frame, (cX, cY), 7, (255, 255, 255), -1)
+        
+
         # show the image
         cv2.imshow("Image", frame)
-
-    #cv2.imshow("images", dilation)
-    
-    #cv2.imshow("images", np.hstack([frame, frame_threshed]))
-    #cv2.imwrite('output2.jpg', frame_threshed)
-
-#     # loop over the boundaries
-#     for (lower, upper) in orange:
-#         # create NumPy arrays from the boundaries
-#         lower = np.array(lower, dtype = "uint8")
-#         upper = np.array(upper, dtype = "uint8")
-     
-#         # find the colors within the specified boundaries and apply
-#         # the mask
-#         mask = cv2.inRange(frame, lower, upper)
-#         output = cv2.bitwise_and(frame, frame, mask = mask)
-     
-#         # show the images
-#         cv2.imshow("images", np.hstack([frame, output]))
-# #        cv2.waitKey(0)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
