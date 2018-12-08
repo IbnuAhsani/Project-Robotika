@@ -2,11 +2,14 @@ import numpy as np
 #import argparse
 import cv2
 import imutils
+import serial
 
 # construct the argument parse and parse the arguments
 
-cap = cv2.VideoCapture("http://10.112.1.230:8080/video")
+cap = cv2.VideoCapture("http://10.112.1.128:8080/video")
 # cap = cv2.VideoCapture("http://192.168.43.1:8080/video")
+
+ser1 = serial.Serial('COM4', 9600)
 
 def nothing(x):
     pass
@@ -85,11 +88,14 @@ while(True):
         if cX > boundRight:
         	# Geser robot ke kanan
         	print ("Kanan")
+            ser1.write('1'.encode())
         elif cX < boundLeft:
         	print ("Kiri")
+            ser1.write('0'.encode())
         	# Geser robot ke kiri
         else:
         	print("Ya")
+            ser1.write('2'.encode())
 
         # show the image
         cv2.imshow("Image", frame)
