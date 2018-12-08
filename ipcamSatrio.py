@@ -4,29 +4,13 @@ import cv2
 import imutils
 
 # construct the argument parse and parse the arguments
-#ap = argparse.ArgumentParser()
-#ap.add_argument("-i", "--image", help = "path to the image")
-#args = vars(ap.parse_args())
 
-# cap = cv2.VideoCapture("http://10.112.1.67:8080/video")
-cap = cv2.VideoCapture("http://192.168.43.1:8080/video")
-
-
-# define the list of boundaries
-# BGR
-# boundaries = [
-#     ([17, 15, 100], [50, 56, 200]),
-#     ([86, 31, 4], [220, 88, 50]),
-#     ([25, 146, 190], [62, 174, 250]),
-#     ([103, 86, 65], [145, 133, 128])
-# ]
-
-# green = [([33,80,40], [102,255,255])]
-
-# orange = [([50, 100, 255],[0, 30, 110])]
+cap = cv2.VideoCapture("http://10.112.1.230:8080/video")
+# cap = cv2.VideoCapture("http://192.168.43.1:8080/video")
 
 def nothing(x):
     pass
+
 # Creating a window for later use
 cv2.namedWindow('result')
 
@@ -34,20 +18,22 @@ cv2.namedWindow('result')
 h,s,v = 100,100,100
 
 # Creating track bar
-cv2.createTrackbar('h', 'result',0,179,nothing)
-cv2.createTrackbar('s', 'result',0,255,nothing)
-cv2.createTrackbar('v', 'result',0,255,nothing)
+# cv2.createTrackbar('h', 'result',0,179,nothing)
+# cv2.createTrackbar('s', 'result',0,255,nothing)
+# cv2.createTrackbar('v', 'result',0,255,nothing)
 
 while(True):
     # get info from track bar and appy to result
-    h = cv2.getTrackbarPos('h','result')
-    s = cv2.getTrackbarPos('s','result')
-    v = cv2.getTrackbarPos('v','result')
-
+    # h = cv2.getTrackbarPos('h','result')
+    # s = cv2.getTrackbarPos('s','result')
+    # v = cv2.getTrackbarPos('v','result')
+    h = 0
+    s = 100
+    v = 100
     ret, frame = cap.read()
     frame = cv2.resize(frame, (0,0), fx=0.5, fy=0.5)
-    #cv2.imshow('frame',frame)
-    #image = frame
+    
+    height, width, channel = frame.shape
 
     ORANGE_MIN = np.array([h, s, v],np.uint8)
     ORANGE_MAX = np.array([15, 255, 255],np.uint8)
@@ -63,21 +49,23 @@ while(True):
     # find contours in the thresholded image
     cnts = cv2.findContours(dilation.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     cnts = cnts[0] if imutils.is_cv2() else cnts[1]
-    con = []
-    con = max(cnts, key = cv2.contourArea)
-        
     
+    # Boundary for moving
+    boundLeft = int(width * 0.45)
+    boundRight = int(width * 0.55)
+
     for c in cnts:
-        # compute the center of the contour
-        M = cv2.moments(c)
+
+        con = max(cnts, key = cv2.contourArea)
+    	# compute the center of the contour
+        M = cv2.moments(con)
         cX = int(M["m10"] / M["m00"])
         cY = int(M["m01"] / M["m00"])
 
         # draw the contour and center of the shape on the image
         cv2.drawContours(frame, [c], -1, (0, 255, 0), 2)
-        #find the biggest area
         
-        #con = max([c], key = cv2.contourArea)
+        #find the biggest area
         x,y,w,h = cv2.boundingRect(con)
         cv2.rectangle(frame,(x,y),(x+w,y+h),(0,0,255),2)
 
@@ -86,8 +74,22 @@ while(True):
         radius = int(radius)
     
         cv2.circle(frame,center,radius,(255,255,0),2)
-        cv2.circle(frame, (cX, cY), 7, (255, 255, 255), -1)
         
+        cv2.circle(frame, (cX, cY), 7, (255, 255, 255), -1)
+
+        cv2.line(frame,(int(x),int(y-h/2)),(int(x),int(y+h/2)),(255,0,0),5)
+        
+        cv2.line(frame,(boundLeft,0),(boundLeft,height),(255,0,0),1)
+        cv2.line(frame,(boundRight,0),(boundRight,height),(255,0,0),1)
+
+        if cX > boundRight:
+        	# Geser robot ke kanan
+        	print ("Kanan")
+        elif cX < boundLeft:
+        	print ("Kiri")
+        	# Geser robot ke kiri
+        else:
+        	print("Ya")
 
         # show the image
         cv2.imshow("Image", frame)
