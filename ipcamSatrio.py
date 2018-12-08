@@ -106,6 +106,7 @@ while(True):
 
     # Display the image
     cv2.imshow("Image", frame)
+    ser1.write('2'.encode())
     print("Ya")
 
     # Close the program if 'q' is pressed
