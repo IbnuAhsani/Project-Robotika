@@ -54,8 +54,8 @@ while(True):
     cnts = cnts[0] if imutils.is_cv2() else cnts[1]
     
     # Boundary for moving
-    boundLeft = int(width * 0.45)
-    boundRight = int(width * 0.55)
+    boundLeft = int(width * 0.40)
+    boundRight = int(width * 0.60)
 
     for c in cnts:
 
@@ -82,20 +82,20 @@ while(True):
 
         cv2.line(frame,(int(x),int(y-h/2)),(int(x),int(y+h/2)),(255,0,0),5)
         
-        cv2.line(frame,(boundLeft,0),(boundLeft,height),(255,0,0),1)
-        cv2.line(frame,(boundRight,0),(boundRight,height),(255,0,0),1)
+        cv2.line(frame,(boundLeft,0),(boundLeft,height),(255,0,0),3)
+        cv2.line(frame,(boundRight,0),(boundRight,height),(255,0,0),3)
 
         if cX > boundRight:
         	# Geser robot ke kanan
-        	print ("Kanan")
-            ser1.write('1'.encode())
+            ser1.write('1'.encode()) 
+            print ("Kanan")
         elif cX < boundLeft:
-        	print ("Kiri")
             ser1.write('0'.encode())
+            print("Kiri")
         	# Geser robot ke kiri
         else:
-        	print("Ya")
             ser1.write('2'.encode())
+            print("Ya")
 
         # show the image
         cv2.imshow("Image", frame)
