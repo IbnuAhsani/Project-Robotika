@@ -82,10 +82,10 @@ while(True):
         cv2.line(frame,(boundLeft,0),(boundLeft,height),(255,0,0),1)
         cv2.line(frame,(boundRight,0),(boundRight,height),(255,0,0),1)
 
-        if cX < boundLeft:
+        if cX > boundRight:
         	# Geser robot ke kanan
         	print ("Kanan")
-        elif cX > boundRight:
+        elif cX < boundLeft:
         	print ("Kiri")
         	# Geser robot ke kiri
         else:
