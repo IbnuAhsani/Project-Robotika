@@ -2,9 +2,10 @@ import serial
 
 ser1 = serial.Serial('COM7', 9600)
 
-# t = 0
+t = 0
 
-while t<1000:
+while t<8000:
+
 #   # if(t%10 == 0):
 #   if t >= 0 and t <= 3000:
 #     ser1.write('1'.encode())
