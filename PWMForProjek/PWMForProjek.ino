@@ -5,6 +5,8 @@ const int E2 = 6;
 const int M2 = 7;
 const int pingKanan = 9;
 const int pingKiri = 8;
+const int pingDepan = 10;
+const int buzzer = 7;
 char serialData;
 
 long pinPingFunc(int pinPing){
@@ -31,6 +33,7 @@ void setup()
 { 
     pinMode(M1, OUTPUT);   
     pinMode(M2, OUTPUT); 
+    pinMode(buzzer, OUTPUT); 
     Serial.begin(9600);
 } 
 
@@ -58,42 +61,19 @@ void diam(){
 
 void loop() 
 { 
-  long cmKanan, cmKiri;
+  long cmKanan, cmKiri,cmDepan;
   cmKanan = pinPingFunc(pingKanan);
   cmKiri = pinPingFunc(pingKiri);
-
+  cmDepan = pinPingFunc(pingDepan);
+  
   Serial.print(cmKanan);
-  Serial.println("cm in ping 1");
+  Serial.println("cm in ping Kanan");
   Serial.print(cmKiri);
-  Serial.print("cm in ping 2");
+  Serial.print("cm in ping Kiri");
   Serial.println();
 
-// Kodingan faizin
-//  if(cm1 <= 50 || cm2 <= 50){
-//    Serial.print("STOP");  
-//    diam();
-//  }else{
-//    kanan();
-//  }
-//  delay(10);
 
-//  if(cm1 <= 5 || cm2 <= 5){
-//    Serial.print("Berhenti");
-//  } else {
-//    if(Serial.available() > 0){
-//    serialData = Serial.read();
-//    Serial.print(serialData);
-//
-//    if(serialData == '1'){
-//      kanan();
-//    } else if(serialData == '0'){
-//      kiri();
-//    } else{
-//      diam();
-//    }
-//  }
-//  }
-// Kodingan berhasil
+ // Kodingan berhasil
   if(Serial.available() > 0){
     serialData = Serial.read();
     Serial.print(serialData);
@@ -103,6 +83,7 @@ void loop()
         diam();
       } else{
         kanan();
+        
       }
     } else if(serialData == '0'){
       if(cmKanan <= 30){
@@ -112,8 +93,20 @@ void loop()
       }
     } else{
       diam();
+      if(cmDepan <= 12){
+//        Tendang
+//          Serial.print("Tendang DIGG");
+//          Serial.println();
+        digitalWrite(buzzer,HIGH);
+        delay(200);
+        digitalWrite(buzzer,LOW);
+        delay(200);
+      }
     }
   }
+  Serial.print(cmDepan);
+  Serial.print("cm di depan");
+  Serial.println();
   delay(10);
 }
 
