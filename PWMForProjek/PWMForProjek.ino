@@ -5,8 +5,8 @@ const int E2 = 6;
 const int M2 = 7;
 const int pingKanan = 9;
 const int pingKiri = 8;
-const int pingDepan = 10;
-const int buzzer = 7;
+//const int pingDepan = 10;
+//const int buzzer = 7;
 char serialData;
 
 long pinPingFunc(int pinPing){
@@ -33,7 +33,7 @@ void setup()
 { 
     pinMode(M1, OUTPUT);   
     pinMode(M2, OUTPUT); 
-    pinMode(buzzer, OUTPUT); 
+//    pinMode(buzzer, OUTPUT); 
     Serial.begin(9600);
 } 
 
@@ -64,7 +64,7 @@ void loop()
   long cmKanan, cmKiri,cmDepan;
   cmKanan = pinPingFunc(pingKanan);
   cmKiri = pinPingFunc(pingKiri);
-  cmDepan = pinPingFunc(pingDepan);
+//  cmDepan = pinPingFunc(pingDepan);
   
   Serial.print(cmKanan);
   Serial.println("cm in ping Kanan");
@@ -79,34 +79,34 @@ void loop()
     Serial.print(serialData);
 
     if(serialData == '1'){
-      if(cmKiri <= 30){
+      if(cmKiri <= 50){
         diam();
       } else{
         kanan();
         
       }
     } else if(serialData == '0'){
-      if(cmKanan <= 30){
+      if(cmKanan <= 50){
         diam();
       } else{
         kiri();
       }
     } else{
       diam();
-      if(cmDepan <= 12){
+//      if(cmDepan <= 12){
 //        Tendang
 //          Serial.print("Tendang DIGG");
 //          Serial.println();
-        digitalWrite(buzzer,HIGH);
-        delay(200);
-        digitalWrite(buzzer,LOW);
-        delay(200);
-      }
+//        digitalWrite(buzzer,HIGH);
+//        delay(200);
+//        digitalWrite(buzzer,LOW);
+//        delay(200);
+//      }
     }
   }
-  Serial.print(cmDepan);
-  Serial.print("cm di depan");
-  Serial.println();
+//  Serial.print(cmDepan);
+//  Serial.print("cm di depan");
+//  Serial.println();
   delay(10);
 }
 
